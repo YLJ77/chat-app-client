@@ -47,7 +47,6 @@
 
 import moment from 'moment'
 import io from 'socket.io-client';
-import '../assets/css/styles.css'
 const socket = io('http://localhost:3000');
 
 export default {
@@ -90,6 +89,7 @@ export default {
     },
     mounted() {
         this.init();
+        console.warn(this.$route.params);
     }
 }
 </script>
