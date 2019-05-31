@@ -2,13 +2,13 @@
     <div class="home">
         <ul>
             <li v-for="msg in messages">
-                <span v-if="!msg.isLoc">{{ msg.msg }}</span>
+                <span v-if="!msg.isLoc">{{ `${msg.time}: ${ msg.msg } ` }}</span>
                 <a target="_blank" :href="msg.msg" v-else>我现在的位置</a>
             </li>
         </ul>
         <el-form>
             <el-form-item>
-                <el-input v-model="message">
+                <el-input v-model="message" @keyup.enter.native="send">
                     <el-button slot="append" @click="send" :loading="isSending">send</el-button>
                 </el-input>
             </el-form-item>
@@ -27,6 +27,7 @@
 
 <script>
 
+import moment from 'moment'
 import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
 
@@ -63,6 +64,7 @@ export default {
         },
         init() {
             socket.on('message', (msg) => {
+                msg.time = moment(msg.time).format('hh:mm:ss a');
                 this.messages.push(msg);
             });
         }
