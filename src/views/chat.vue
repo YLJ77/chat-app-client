@@ -32,7 +32,7 @@
                             <el-button type="primary" slot="append" @click="send" :loading="isSending">send</el-button>
                         </el-input>
                     </form>
-                    <el-button @click="sendLoc" :loading="isSending">发送位置</el-button>
+                    <el-button @click="sendLoc" :loading="isLocSending">发送位置</el-button>
                 </div>
             </div>
         </div>
@@ -59,6 +59,7 @@ export default {
         return {
             message: '',
             isSending: false,
+            isLocSending: false,
             messages: [],
             room: '',
             users: []
@@ -92,10 +93,10 @@ export default {
         sendLoc() {
             navigator.geolocation.getCurrentPosition(pos => {
                 console.log(pos);
-                this.isSending = true;
+                this.isLocSending = true;
                 let { coords: { latitude, longitude } } = pos
                 socket.emit('sendLocation', { latitude, longitude }, msg => {
-                    this.isSending = false;
+                    this.isLocSending = false;
                     console.log(msg);
                 })
             })
