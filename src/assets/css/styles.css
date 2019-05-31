@@ -115,7 +115,7 @@ button:disabled {
 /* Message Styles */
 
 .message {
-    margin-bottom: 16px;   
+    padding-bottom: 60px;
 }
 
 .message__name {

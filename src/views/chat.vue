@@ -10,7 +10,7 @@
 
             </div>
             <div class="chat__main">
-                <div id="messages" class="chat__messages">
+                <div id="messages" class="chat__messages" ref="messages">
                     <div class="message">
                         <template v-for="msg in messages">
                             <p>
@@ -65,6 +65,30 @@ export default {
         }
     },
     methods: {
+        autoScroll() {
+            const $messages = this.$refs.messages;
+            // New message element
+            const $newMessage = $messages.lastElementChild
+
+            // Height of the new message
+            const newMessageStyles = getComputedStyle($newMessage)
+            const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+            const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+            // Visible height
+            const visibleHeight = $messages.offsetHeight
+
+            // Height of messages container
+            const containerHeight = $messages.scrollHeight
+
+            // How far have I scrolled?
+            const scrollOffset = $messages.scrollTop + visibleHeight
+
+            if (containerHeight - newMessageHeight <= scrollOffset) {
+                $messages.scrollTop = $messages.scrollHeight
+            }
+
+        },
         sendLoc() {
             navigator.geolocation.getCurrentPosition(pos => {
                 console.log(pos);
@@ -94,6 +118,7 @@ export default {
             socket.on('message', (msg) => {
                 msg.time = moment(msg.time).format('hh:mm:ss a');
                 this.messages.push(msg);
+                this.autoScroll();
             });
             socket.on('roomData', ({ users, room }) => {
                 this.users = users;
