@@ -1,15 +1,29 @@
 <template>
     <div class="home">
+        <ul>
+            <li v-for="msg in messages">
+                <span v-if="!msg.isLoc">{{ msg.msg }}</span>
+                <a target="_blank" :href="msg.msg" v-else>我现在的位置</a>
+            </li>
+        </ul>
         <el-form>
             <el-form-item>
                 <el-input v-model="message">
-                    <el-button slot="append" @click="send">send</el-button>
+                    <el-button slot="append" @click="send" :loading="isSending">send</el-button>
                 </el-input>
             </el-form-item>
-            <el-button @click="getLoc">获取位置</el-button>
+            <el-button @click="sendLoc" :loading="isSending">发送位置</el-button>
         </el-form>
     </div>
 </template>
+
+<style lang="scss" scoped>
+    ul {
+        li {
+            list-style: none;
+        }
+    }
+</style>
 
 <script>
 
@@ -19,32 +33,42 @@ const socket = io('http://localhost:3000');
 export default {
     data() {
         return {
-            message: ''
+            message: '',
+            isSending: false,
+            messages: []
         }
     },
     methods: {
-        getLoc() {
+        sendLoc() {
             navigator.geolocation.getCurrentPosition(pos => {
                 console.log(pos);
+                this.isSending = true;
                 let { coords: { latitude, longitude } } = pos
-                socket.emit('sendLocation', { latitude, longitude })
+                socket.emit('sendLocation', { latitude, longitude }, msg => {
+                    this.isSending = false;
+                    console.log(msg);
+                })
             })
         },
         send() {
             let { message } = this;
-            socket.emit('sendMessage', message);
+            this.isSending = true;
+            socket.emit('sendMessage', message, (msg) => {
+                this.isSending = false;
+                console.log(msg);
+            });
         },
         increment() {
             socket.emit('increment');
         },
-        test() {
+        init() {
             socket.on('message', (msg) => {
-                console.log(msg);
+                this.messages.push(msg);
             });
         }
     },
     mounted() {
-        this.test();
+        this.init();
     }
 }
 </script>
