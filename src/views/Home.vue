@@ -1,19 +1,37 @@
 <template>
     <div class="home">
-        <ul>
-            <li v-for="msg in messages">
-                <span v-if="!msg.isLoc">{{ `${msg.time}: ${ msg.msg } ` }}</span>
-                <a target="_blank" :href="msg.msg" v-else>我现在的位置</a>
-            </li>
-        </ul>
-        <el-form>
-            <el-form-item>
-                <el-input v-model="message" @keyup.enter.native="send">
-                    <el-button slot="append" @click="send" :loading="isSending">send</el-button>
-                </el-input>
-            </el-form-item>
-            <el-button @click="sendLoc" :loading="isSending">发送位置</el-button>
-        </el-form>
+        <div class="chat">
+            <div class="chat__sidebar">
+
+            </div>
+            <div class="chat__main">
+                <div id="messages" class="chat__messages">
+                    <div class="message">
+                        <template v-for="msg in messages">
+                            <p>
+                                <span class="message__name">Some User Name</span>
+                                <span class="message__meta">{{ msg.time }}</span>
+                            </p>
+                            <p v-if="!msg.isLoc">{{ msg.msg }}</p>
+                            <p v-else><a :href="msg.msg" target="_blank">我的位置</a></p>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="compose">
+                    <form id="message-form">
+                        <el-input
+                                placeholder="Message"
+                                v-model="message"
+                                @keyup.enter.native="send">
+                            <el-button type="primary" slot="append" @click="send" :loading="isSending">send</el-button>
+                        </el-input>
+                    </form>
+                    <el-button @click="sendLoc" :loading="isSending">发送位置</el-button>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -29,6 +47,7 @@
 
 import moment from 'moment'
 import io from 'socket.io-client';
+import '../assets/css/styles.css'
 const socket = io('http://localhost:3000');
 
 export default {
