@@ -1,18 +1,28 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-button @click="increment">increment</el-button>
+    <h1>chat app</h1>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
-}
+    import io from 'socket.io-client';
+    const socket = io('http://localhost:3000');
+
+    export default {
+        methods: {
+            increment() {
+                socket.emit('increment');
+            },
+            test() {
+                socket.on('countUpdated', (count) => {
+                    console.log('count 已更新', count);
+                });
+            }
+        },
+        mounted() {
+            this.test();
+        }
+    }
 </script>
