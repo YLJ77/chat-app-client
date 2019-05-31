@@ -7,7 +7,7 @@
                     <el-input v-model="ruleForm.name" placeholder="用户名" required></el-input>
                 </el-form-item>
                 <el-form-item prop="room">
-                    <el-input v-model="ruleForm.room" placeholder="房间" required></el-input>
+                    <el-input v-model="ruleForm.room" placeholder="房间" required @keyup.enter.native="join"></el-input>
                 </el-form-item>
                 <el-button type="primary" @click="join">Join</el-button>
             </el-form>

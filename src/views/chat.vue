@@ -9,7 +9,7 @@
                     <div class="message">
                         <template v-for="msg in messages">
                             <p>
-                                <span class="message__name">Some User Name</span>
+                                <span class="message__name">{{ msg.name }}</span>
                                 <span class="message__meta">{{ msg.time }}</span>
                             </p>
                             <p v-if="!msg.isLoc">{{ msg.msg }}</p>
@@ -77,10 +77,13 @@ export default {
                 console.log(msg);
             });
         },
-        increment() {
-            socket.emit('increment');
-        },
         init() {
+            socket.emit('join', this.$route.params, err => {
+                if (err) {
+                    this.$message.error(err)
+                    this.$router.replace('/')
+                }
+            });
             socket.on('message', (msg) => {
                 msg.time = moment(msg.time).format('hh:mm:ss a');
                 this.messages.push(msg);
@@ -89,7 +92,6 @@ export default {
     },
     mounted() {
         this.init();
-        console.warn(this.$route.params);
     }
 }
 </script>
