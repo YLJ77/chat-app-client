@@ -2,6 +2,11 @@
     <div class="home">
         <div class="chat">
             <div class="chat__sidebar">
+                <h2 class="room-title">{{room}}</h2>
+                <h3 class="list-title">Users</h3>
+                <ul class="users">
+                    <li v-for="user in users">{{user.name}}</li>
+                </ul>
 
             </div>
             <div class="chat__main">
@@ -54,7 +59,9 @@ export default {
         return {
             message: '',
             isSending: false,
-            messages: []
+            messages: [],
+            room: '',
+            users: []
         }
     },
     methods: {
@@ -87,6 +94,10 @@ export default {
             socket.on('message', (msg) => {
                 msg.time = moment(msg.time).format('hh:mm:ss a');
                 this.messages.push(msg);
+            });
+            socket.on('roomData', ({ users, room }) => {
+                this.users = users;
+                this.room = room;
             });
         }
     },
