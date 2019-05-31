@@ -24,14 +24,15 @@
                 </div>
 
                 <div class="compose">
-                    <form id="message-form">
+                    <div id="message-form">
                         <el-input
+                                autofocus="true"
                                 placeholder="Message"
                                 v-model="message"
                                 @keyup.enter.native="send">
                             <el-button type="primary" slot="append" @click="send" :loading="isSending">send</el-button>
                         </el-input>
-                    </form>
+                    </div>
                     <el-button @click="sendLoc" :loading="isLocSending">发送位置</el-button>
                 </div>
             </div>
@@ -101,8 +102,9 @@ export default {
                 })
             })
         },
-        send() {
+        send(event) {
             let { message } = this;
+            event.preventDefault();
             this.isSending = true;
             socket.emit('sendMessage', message, (msg) => {
                 this.isSending = false;
