@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="compose">
-                    <div id="message-form">
+                    <div id="message-form" style="width: 100%;">
                         <el-input
                                 autofocus="true"
                                 placeholder="Message"
@@ -33,7 +33,8 @@
                             <el-button type="primary" slot="append" @click="send" :loading="isSending">send</el-button>
                         </el-input>
                     </div>
-                    <el-button @click="sendLoc" :loading="isLocSending">发送位置</el-button>
+                    <!--需科学上网才能发送位置-->
+<!--                    <el-button @click="sendLoc" :loading="isLocSending">发送位置</el-button>-->
                 </div>
             </div>
         </div>
@@ -108,6 +109,7 @@ export default {
             this.isSending = true;
             socket.emit('sendMessage', message, (msg) => {
                 this.isSending = false;
+                this.message = '';
                 console.log(msg);
             });
         },
