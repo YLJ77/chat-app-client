@@ -53,8 +53,7 @@
 <script>
 
 import moment from 'moment'
-import io from 'socket.io-client';
-const socket = io('http://localhost:3000');
+import socket from '../socket'
 
 export default {
     data() {
@@ -106,6 +105,7 @@ export default {
         send(event) {
             let { message } = this;
             event.preventDefault();
+            if (!message) return;
             this.isSending = true;
             socket.emit('sendMessage', message, (msg) => {
                 this.isSending = false;
